@@ -1,0 +1,62 @@
+import React from 'react'
+import { useState ,useEffect} from 'react'
+import { useNavigate } from 'react-router-dom'
+
+const Login = () => {
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+
+  useEffect(()=>{
+    const verify=localStorage.getItem('user');
+    if(verify)
+    {
+      navigate('/');
+    }
+  }
+  )
+
+  const collectData = async () => {
+    console.log( email, password);
+
+    let data = await fetch('http://localhost:3000/login', {
+      method: "post",
+      body: JSON.stringify({ email, password }),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+
+    let result = await data.json();
+    localStorage.setItem('user', JSON.stringify(result));
+    console.warn(result);
+
+    if(result)
+    {
+      navigate('/');
+    }
+  }
+
+  return (
+
+    <div className='signupmain'>
+
+      <h2 className='sh'>Login Now</h2>
+
+      <div className='sign2'>
+
+        
+        <input className='sinp' type="email" placeholder='e-mail' value={email} onChange={(e) => { setEmail(e.target.value) }} minlength="5" maxlength="50" required />
+        <input className='sinp' type="password" placeholder='password' value={password} onChange={(e) => { setPassword(e.target.value) }} minlength="3" maxlength="5" required />
+        <button className='sbtn' onClick={collectData}>Submit</button>
+
+      </div>
+
+
+    </div>
+  )
+}
+
+
+export default Login
